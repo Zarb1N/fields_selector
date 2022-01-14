@@ -15,7 +15,6 @@ html, body {
     background-color: rgb(255, 255, 255);
     overflow-x: hidden;
     transition: 0.5s;
-    padding-top: 60px;
 }
 
 .sidepanel a {
@@ -66,23 +65,6 @@ html, body {
     color: gray;
     /* And disable the pointer events */
     pointer-events: none;
-}
-
-#closebtn {
-    position: absolute;
-    display:flex;
-    z-index: 1500;
-    right: 15px;
-    top: 15px;
-    width: 108px;
-    /*
-    font-size: 20px;
-    cursor: pointer;
-    background-color: #111;
-    color: white;
-    padding: 10px 15px;
-    border: none;
-    */
 }
 
 .closebtn:hover {
@@ -463,6 +445,14 @@ margin-left: 10px;
 
 
 /* 2021.01.14, Zarbin */
+.sidepanel {
+    overflow-x: hidden;
+}
+.accordion {
+    min-width: 290px;
+    padding: 40px 15px;
+    
+}
 .fields__form--invisible {
     display: none;
 }
@@ -538,10 +528,65 @@ margin-left: 10px;
     grid-template-columns: 1fr auto 1fr;
     gap: 10px;
     width: 100%;
+    margin-top: 30px;
 }
 .error-messages {
     color:  red;
     font-size: 16px;
     font-weight: 700;
     text-align: center;
+}
+
+
+
+.actions {
+    position: absolute;
+    z-index: 1500;
+    background: white;
+    right: 15px;
+    top: 15px;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 250px;
+    opacity: 90%;
+    align-items: center;
+}
+#action__selected-area {
+    font-weight: 700;
+}
+#closebtn {
+    z-index: 1500;
+    align-self: flex-end;
+    width: 108px;
+    /*
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    */
+}
+
+@media (max-width: 475px) {
+    .actions {
+        bottom: 0px;
+        right: 0px;
+        left: 0px;
+        top: auto;
+        border-radius: 20px 20px 0px 0px;
+        padding: 15px 15px 20px 15px;
+        opacity: 95%;
+        display: grid;
+        grid-template-columns: 1fr min-content;
+        justify-items: center;
+        align-items: center;
+    }
+    #closebtn {
+        justify-self: flex-end;
+        border-radius: 5px;
+    }
 }

@@ -193,25 +193,26 @@ function init_map(){
         ft_buffer = merged;//e.features[0];
         var ft_area = (Math.round((turf.area(ft_buffer)/10000) * 100) / 100);
         popup
-            .setLngLat(e.lngLat)
-            .setHTML(
-                "<div class='container'>"+
-                      "<div class='form-group'>"+
-                        "<p>Площадь контура Га: <b>"+ft_area+"</b></p>"+
-                        "<label for='crop_area'>Площадь посева Га:</label>"+
-                        "<input type='number' class='form-control' name='crop_area' id='crop_area'>"+
-                        "<label for='crop_name'>Культура:</label>"+
-                        "<select class='form-control' id='crop_name' name='crop_name' >"+
-                            get_croplist()+
-                          "<option value=13>Сахарная свекла</option>"+
-                        "</select>"+
-                      "</div>"+
-                      "<button type='submit' style='float:left' onclick='update_draw()'>Сохранить</button>"+
-                      "<button type='submit' style='float:right' onclick='popup.remove()'>Отмена</button>"+
-                "</div>"
-            ).addTo(map);
+             .setLngLat(e.lngLat)
+             .setHTML(
+                 "<div class='container'>"+
+                       "<div class='form-group'>"+
+                         "<p>Площадь контура Га: <b>"+ft_area+"</b></p>"+
+                         "<label for='crop_area'>Площадь посева Га:</label>"+
+                         "<input type='number' class='form-control' name='crop_area' id='crop_area'>"+
+                         "<label for='crop_name'>Культура:</label>"+
+                         "<select class='form-control' id='crop_name' name='crop_name' >"+
+                             get_croplist()+
+                           "<option value=13>Сахарная свекла</option>"+
+                         "</select>"+
+                       "</div>"+
+                       "<button type='submit' style='float:left' onclick='update_draw()'>Сохранить</button>"+
+                       "<button type='submit' style='float:right' onclick='popup.remove()'>Отмена</button>"+
+                 "</div>"
+             )
+        .addTo(map);
         $("#crop_area").val(ft_area);
-        $("#crop_name").focus();
+        update_draw()
     });
 
 

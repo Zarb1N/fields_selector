@@ -64,96 +64,105 @@
                 <!--
                 <nav id="menu"></nav>
                 -->
-                <div class="map-overlay" id='selarea'>
+                <!-- <div class="map-overlay" id='selarea'>
                     <h2 class="accordion__highlighted">Площадь выбранных конутров</h2>
                     <div id="sarea">
-                        <!-- <p id="maxarea">Площадь по договору <b>1000</b> Га</p> -->
+                        <p id="maxarea">Площадь по договору <b>1000</b> Га</p> 
                     </div>
                     <div id='pdd'>
                         <p>Укажите мышкой конутр вашего поля, если поля нет на карте, нарисуйте конутр</p>
                     </div>
-                </div>
+                </div> -->
             </div>
             <!--
             <button class="btn btn btn-primary" id="editbtn" onclick="SetEditMode()">Изменить</button>
             -->
-            <label class="label-checkbox" id="editbtn" onchange="SetEditMode()">
+            <!-- <label class="label-checkbox" id="editbtn" onchange="SetEditMode()">
                 <input type="checkbox">
                 <span>Изменить</span>
-            </label>
-            <button class="btn btn btn-primary" id="closebtn" onclick="hideMap()">Завершить</button>
+            </label> -->
+            <div class="actions">
+                <div>Выбранная площадь: <span id="action__selected-area">0</span> га</div>
+                <button class="btn btn btn-primary btn-sm" id="closebtn" onclick="hideMap()">Завершить</button>
+
+            </div>
 
         </div>
 
         <div class="sidepanel" id="mySidepanel">
-            <h2 class="accordion__header" id="" >
-                Рассчитать стоимость страхования
-            </h2> 
-            <form class="accordion__body form" id="form" name="form" onsubmit="validation.isValid() && sendForm(this); return false">
-                <div class="form__fields-choosing">
-                    <div class="form__header">
-                        <div class="form__title">Выбранные поля</div>
+            <div class="accordion">
+                <h2 class="accordion__header" id="" >
+                    Рассчитать стоимость страхования
+                </h2> 
+                <form class="accordion__body form" id="form" name="form" onsubmit="validation.isValid() && sendForm(this); return false">
+                    <div class="form__fields-choosing">
+                        <div class="form__header">
+                            <div class="form__title">Выбранные поля</div>
+                            <button 
+                                class="btn btn-primary btn-sm" 
+                                type="button" 
+                                id="button-addon3" 
+                                onclick="showMap()">
+                                Укажите поля на карте
+                            </button>
+                        </div>
+                        <ul id="accordion__list">
+                            <li class="accordion__list-item accordion__highlighted"> <div>Номер поля</div>  <div>Площадь поля</div></li>
+                            <li class="accordion__list-item"><div style="grid-column: 1 / -1;">Вы еще не выбрали ни одного поля</div></li>
+                        </ul>
+                    </div>
+                    <div class="error-messages"></div>
+                    
+                    <div class="form__item">
+                        <div>Адрес электронной почты</div>
+                        <input 
+                            type="email"
+                            id="email"
+                            class="validate"
+                            data-validate="required, email"
+                            placeholder="Example: test@domen.com"
+                        >
+                    </div>
+                    <div class="form__item">
+                        <div>Номер телефона</div>
+                        <input 
+                            type="tel"
+                            id="tel"
+                            class="validate"
+                            data-validate="required, phoneNumber"
+                            placeholder="Example: 89991234567"
+                        >
+                    </div>
+                    <div class="form__item">
+                        <div>ИНН</div>
+                        <input 
+                            type="text"
+                            name="taxpayerIdntificator"
+                            id="taxpayerIdntificator"
+                            class="validate"
+                            data-validate="required, taxpayerIdntificator"
+                            placeholder="Example: 1234567890"
+                        >
+                    </div>
+                    <div class="form__actions">
                         <button 
-                            class="btn btn-primary btn-sm" 
+                            class="btn btn-secondary form__submit-btn" 
                             type="button" 
-                            id="button-addon3" 
-                            onclick="showMap()">
-                            Укажите поля на карте
+                            onclick="cancelForm()"
+                        >
+                            Отменить
+                        </button>
+                        <div></div>
+                        <button 
+                            class="btn btn-primary form__submit-btn" 
+                            type="submit" 
+                            name="submit"
+                        >
+                            Заказать контуры
                         </button>
                     </div>
-                    <ul id="accordion__list">
-                        <li class="accordion__list-item accordion__highlighted"> <div>Номер поля</div>  <div>Площадь поля</div></li>
-                        <li class="accordion__list-item"><div style="grid-column: 1 / -1;">Вы еще не выбрали ни одного поля</div></li>
-                    </ul>
-                </div>
-                <div class="error-messages"></div>
-                
-                <div class="form__item">
-                    <div>Адрес электронной почты</div>
-                    <input 
-                        type="email"
-                        id="email"
-                        class="validate"
-                        data-validate="required, email"
-                    >
-                </div>
-                <div class="form__item">
-                    <div>Номер телефона</div>
-                    <input 
-                        type="tel"
-                        id="tel"
-                        class="validate"
-                        data-validate="required, phoneNumber"
-                    >
-                </div>
-                <div class="form__item">
-                    <div>ИНН</div>
-                    <input 
-                        type="text"
-                        name="taxpayerIdntificator"
-                        id="taxpayerIdntificator"
-                        class="validate"
-                        data-validate="required, taxpayerIdntificator"
-                    >
-                </div>
-                <div class="form__actions">
-                    <button 
-                        class="btn btn-secondary form__submit-btn" 
-                        type="button" 
-                        onclick="cancelForm()"
-                    >
-                        Отменить
-                    </button>
-                    <div></div>
-                    <button 
-                        class="btn btn-primary form__submit-btn" 
-                        type="submit" 
-                        name="submit"
-                    >
-                        Заказать контуры
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
             <!-- <div class="accordion accordion-flush" id="accordionFlushExample">
                 <h2 class="accordion-header" id="" style="padding: 60px;">
                     Рассчитать стоимость страхования
@@ -445,16 +454,13 @@
                 else
                     var data = draw.getAll();
 
-                var answer = document.getElementById('pdd');
+                var answer = document.getElementById('action__selected-area');
                 console.log(data)
                 if (data.features.length > 0) {
                     var area = turf.area(data) / 10000;
                     // restrict to area to 2 decimal points
                     var rounded_area = Math.round(area * 100) / 100;
-                    answer.innerHTML =
-                        '<p>Площадь выбранных контуров <strong><b>' +
-                        rounded_area +
-                        '</b></strong> Га</p>';
+                    answer.innerHTML = rounded_area
                 } else {
                     answer.innerHTML = '';
                     /*
