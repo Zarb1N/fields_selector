@@ -318,8 +318,14 @@
                             userInfo
                         })
                     })
-                    console.log('sended')
-                    return false
+                    .then(res => {
+                        if (res.status === 200) {
+                            window.alert("Ваша заявка была успешно отправлена!")
+                        } 
+                        else if (res.status >= 400) {
+                            window.alert("Заявка не отправлена! Обратитесь в службу поддержки или попытайтесь еще раз.")
+                        }
+                    })
 
                 }
                 else {
@@ -346,6 +352,7 @@
             */
             var map = init_map();
             function showMap() {
+                validation.hideAll();
                 document.getElementById("mymap").style.display = "inline";
                 document.getElementById("mySidepanel").style.width = "0";
                 map.resize();
