@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="/include/css/mapbox-gl-draw.css" type="text/css">
     <!--
     <script src="/js/mapbox-gl-draw-passing-mode.js"></script>
-    <script src="/js/mapbox-gl-draw-split-polygon-mode.js"></script>
+    <script src="/js/mapbox-gl-draw-split-polygon-mode.js"></script> 
     -->
 
     <!-- jquery -->
@@ -82,7 +82,7 @@
                 <span>Изменить</span>
             </label> -->
             <div class="actions">
-                <div>Выбранная площадь: <span id="action__selected-area">0</span> га</div>
+                <div>Выбранная площадь: <span style="white-space: nowrap;"><span id="action__selected-area">0</span> га</span></div>
                 <button class="btn btn btn-primary btn-sm" id="closebtn" onclick="hideMap()">Завершить</button>
 
             </div>
@@ -108,7 +108,7 @@
                         </div>
                         <ul id="accordion__list">
                             <li class="accordion__list-item accordion__highlighted"> <div>Номер поля</div>  <div>Площадь поля</div></li>
-                            <li class="accordion__list-item"><div style="grid-column: 1 / -1;">Вы еще не выбрали ни одного поля</div></li>
+                            <li class="accordion__list-item"><div class="accordion__list-item--warning">Вы еще не выбрали ни одного поля</div></li>
                         </ul>
                     </div>
                     <div class="error-messages"></div>
@@ -305,7 +305,6 @@
                     taxpayerIdntificator: e.taxpayerIdntificator.value
                 }
                 if (fields.length !== 0) {
-                    
                     fetch(`${server}`, {
                         method: 'POST',
                         headers: {
@@ -320,10 +319,10 @@
                     })
                     .then(res => {
                         if (res.status === 200) {
-                            window.alert("Ваша заявка была успешно отправлена!")
+                            window.alert("Ваш заказ отправлен, мы свяжемся с вами в ближайшее время")
                         } 
                         else if (res.status >= 400) {
-                            window.alert("Заявка не отправлена! Обратитесь в службу поддержки или попытайтесь еще раз.")
+                            window.alert("Произошла ошибка, попробуйте еще раз")
                         }
                     })
 
@@ -334,14 +333,15 @@
                 }                
             }
             function cancelForm() {
-                //window.location.reload()
-                return false
+                // window.location.reload()
                 cropAreaSum = 0
                 paymentSum = 0
                 fields = []
+                validation.hideAll()
                 document.form.email.value = '',
                 document.form.tel.value = '',
                 document.form.taxpayerIdntificator.value = ''
+                hideMap(true)
             }
 
             /*
@@ -462,14 +462,13 @@
                     var data = draw.getAll();
 
                 var answer = document.getElementById('action__selected-area');
-                console.log(data)
                 if (data.features.length > 0) {
                     var area = turf.area(data) / 10000;
                     // restrict to area to 2 decimal points
                     var rounded_area = Math.round(area * 100) / 100;
                     answer.innerHTML = rounded_area
                 } else {
-                    answer.innerHTML = '';
+                    answer.innerHTML = '0';
                     /*
                     if (e.type !== 'draw.delete')
                         alert('Use the draw tools to draw a polygon!');
@@ -484,14 +483,14 @@
                 //     $("#pdd").css("color", "black");
             };
 
-            function hideMap() {
+            function hideMap(isClearing = false) {
                 //bad logic
                 // if ($("#pdd").css("color") == "rgb(255, 0, 0)") {
                 //     alert("Площадь конутров превышает площадь страхования, скорректируйте контуры");
                 //     return;
                 // }
 
-                // document.getElementById("mymap").style.display = "none";
+                // document.getElementById("mymap").style.display = "none"; 
                 document.getElementById("mySidepanel").style.width = "100%";
                 // document.getElementById('setprop').disabled = false;
                 // document.getElementById('setprop').disabled = false;
@@ -499,10 +498,15 @@
 
 
                 //var data = draw.getAll();
+                if (isClearing) {
+                    map.getSource('cosmetic').setData({type: 'FeatureCollection', features: []})
+                    updateArea()
+                }
                 var data = map.getSource('cosmetic')._data;
                 var onform = [];
                 var curids = [];
                 document.querySelector('.error-messages').innerHTML = ''
+                console.log(data)
                 cropAreaSum = 0
                 paymentSum = 0
                 fields = []
@@ -535,7 +539,7 @@
                     fieldsList.innerHTML += `<li class="accordion__list-item accordion__highlighted"> <div> Сумма к оплате </div> <div> ${paymentSum.toFixed(0)} руб. </div></li>`
                 }
                 else {
-                    fieldsList.innerHTML += `<li class="accordion__list-item"><div style="grid-column: 1 / -1;">Вы еще не выбрали ни одного поля</div></li>`
+                    fieldsList.innerHTML += `<li class="accordion__list-item"><div class="accordion__list-item--warning">Вы еще не выбрали ни одного поля</div></li>`
                 }
                 console.log(data)
 
