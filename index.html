@@ -48,9 +48,10 @@
     <script src="/include/js/thumbnail.js"></script>
     <script src="/include/js/form.js"></script>
 
+
     <link href="/include/css/validation.min.css" rel="stylesheet">
     <script src="/include/js/validation.min.js"></script>
-
+    <script src="/include/js/priceList.js"></script>
 
     <style>
         
@@ -94,6 +95,17 @@
                 <h2 class="accordion__header" id="" >
                     Рассчитать стоимость страхования
                 </h2> 
+                <div class="accordion__prices-table prices-table">
+                    <div class="prices-table__header">
+                        Стоимость первого заказа:
+                    </div>
+                    <ul class="prices-table__items">
+                        <li class="prices-table__item">до 500 Га – <span id="prices-table__item-0"></span> руб/Га</li>
+                        <li class="prices-table__item">от 0 до 5 000 Га – <span id="prices-table__item-1"></span> руб/Га</li>
+                        <li class="prices-table__item">от 5 000 до 15 000 Га – <span id="prices-table__item-2"></span> руб/Га</li>
+                        <li class="prices-table__item">свыше 15 000 Га – <span id="prices-table__item-3"></span> руб/Га</li>
+                    </ul>
+                </div>
                 <form class="accordion__body form" id="form" name="form" onsubmit="validation.isValid() && sendForm(this); return false">
                     <div class="form__fields-choosing">
                         <div class="form__header">
@@ -286,24 +298,25 @@
         </div>
         <script>
             validation.init("form");
-
             const form = document.querySelector('#form')
-            // form.addEventListener('submit', (e) => {
-            //     sendForm(e)
-            //     e.preventDefault()
-            // })
-            const server = ''
+            const server = 'https://opendatabox.info/order'
             let cropAreaSum
             let paymentSum 
             let fields = []
             let errMessage
-
+            priceList.forEach( (priceItem, index) => {
+                priceDomElement = document.querySelector(`#prices-table__item-${index}`)
+                priceDomElement.innerHTML = priceItem.pricePerHectare
+            })
             function sendForm(e) {
                 const userInfo = {
                     email: e.email.value,
                     phone: e.tel.value,
                     taxpayerIdntificator: e.taxpayerIdntificator.value
                 }
+                const fields_ids = fields.map(field => {
+                    return field.id
+                })
                 if (fields.length !== 0) {
                     fetch(`${server}`, {
                         method: 'POST',
@@ -311,7 +324,7 @@
                             'Content-type': 'application/json',
                         },
                         body: JSON.stringify({
-                            fields,
+                            fields_ids,
                             cropAreaSum,
                             paymentSum,
                             userInfo
@@ -321,16 +334,15 @@
                         if (res.status === 200) {
                             window.alert("Ваш заказ отправлен, мы свяжемся с вами в ближайшее время")
                         } 
-                        else if (res.status >= 400) {
+                        else /* if (res.status >= 400)*/ {
                             window.alert("Произошла ошибка, попробуйте еще раз")
                         }
                     })
-
                 }
                 else {
                     errMessage = 'Сначала выберите поля!'
                     document.querySelector('.error-messages').innerHTML = errMessage
-                }                
+                }
             }
             function cancelForm() {
                 // window.location.reload()
@@ -500,13 +512,13 @@
                 //var data = draw.getAll();
                 if (isClearing) {
                     map.getSource('cosmetic').setData({type: 'FeatureCollection', features: []})
+                    cosmetic_geojson =  {'type': 'FeatureCollection','features': []};
                     updateArea()
                 }
                 var data = map.getSource('cosmetic')._data;
                 var onform = [];
                 var curids = [];
                 document.querySelector('.error-messages').innerHTML = ''
-                console.log(data)
                 cropAreaSum = 0
                 paymentSum = 0
                 fields = []
@@ -518,21 +530,11 @@
                     cropAreaSum += field.properties.crop_area
                     fields.push(field.properties)
                 })
-                
-                if (cropAreaSum < 500) {
-                    paymentSum = 0
-                }
-                else if (cropAreaSum < 5000) {
-                    paymentSum = cropAreaSum * 6
-                }
-                else if (cropAreaSum < 15000) {
-                    paymentSum = cropAreaSum * 4
-                }
-                else if (cropAreaSum >= 15000) {
-                    paymentSum = cropAreaSum * 2
-                }
-                else {
-                    paymentSum = undefined
+                for (priceItem of priceList) {
+                    if (priceItem.areaInterval[0] < cropAreaSum && cropAreaSum < priceItem.areaInterval[1]) {
+                        paymentSum = cropAreaSum * priceItem.pricePerHectare
+                        break
+                    }
                 }
                 if (fields.length !== 0) {
                     fieldsList.innerHTML += `<li class="accordion__list-item accordion__highlighted"> <div> Суммарная площадь </div> <div> ${cropAreaSum.toFixed(2)} га </div></li>`
@@ -541,7 +543,6 @@
                 else {
                     fieldsList.innerHTML += `<li class="accordion__list-item"><div class="accordion__list-item--warning">Вы еще не выбрали ни одного поля</div></li>`
                 }
-                console.log(data)
 
 
 
